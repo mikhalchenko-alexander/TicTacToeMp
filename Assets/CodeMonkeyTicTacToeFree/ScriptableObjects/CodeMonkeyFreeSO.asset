@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d777d270cee3a5c419cb21a828556f1a, type: 3}
+  m_Name: CodeMonkeyFreeSO
+  m_EditorClassIdentifier: 
+  currentVersion: 1.00
+  subtype: tictactoengofree
+  lastShownTimestamp: 1747085623
+  lastUpdateResponse:
+    version: 1.00
+    versionUrl: https://unitycodemonkey.com
+  checkedLastUpdateTimestamp: 1747085623
+  lastQOTDResponse:
+    questionId: 180
+    questionText: 'What will be the value of isOne?
+
+      <p>float oneThird = 1f
+      / 3f;</p>
+
+      <p>bool isOne = (oneThird * 3f) == 1f;</p>'
+    answerA: true
+    answerB: false
+    answerC: 
+    answerD: 
+    answerE: 
+  lastQotdTimestamp: 1747085623
+  lastDynamicHeaderResponse:
+    topImageUrl: https://codemonkeyexternal.blob.core.windows.net/external/Misc/humbleMay252DGameAssets.png
+    topText: HUGE bundle with literally 10,000+ 2D elements! 97% OFF!
+    topLink: humblebundle2
+    bottomText: My 10+ Years of C# Knowledge in 1 Course!
+    bottomLink: csharpcourse
+  lastDynamicHeaderTimestamp: 1747085623
+  websiteLatestMessage:
+    text: <a href="https://cmonkey.co/freecourses">Check out all my FREE courses!
+      Click here!</a>
+  websiteLatestMessageTimestamp: 1747085623
+  websiteLatestVideos:
+    videos:
+    - youTubeId: n7DWC5wtXTQ
+      title: TOP 10 NEW Games, Made with Unity! (APRIL 2025)
+    - youTubeId: bl9pc7xaH9Q
+      title: CHEAT SHEET for BOOSTING your GAMES!
+    - youTubeId: G9TfMVURn2U
+      title: Get FREE Awesome Assets EVERY WEEK! Do you know about this?
+    - youTubeId: IdsXZHcgHSU
+      title: The ONE Asset you MUST HAVE!
+  websiteLatestVideosTimestamp: 1747085623
