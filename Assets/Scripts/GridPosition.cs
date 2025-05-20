@@ -9,6 +9,6 @@ public class GridPosition : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        GameManager.Instance.ClickedOnGridPosition(x, y);
+        GameManager.Instance.ClickedOnGridPositionRpc(x, y, GameManager.Instance.GetLocalPlayerType());
     }
 }
