@@ -22,6 +22,9 @@ public class GameManager : NetworkBehaviour
         Circle
     }
 
+    public event EventHandler OnGameStarted;
+    public event EventHandler OnCurrentPlayablePlayerChanged;
+    
     private PlayerType localPlayerType;
     private PlayerType currentPlayablePlayerType;
 
@@ -42,10 +45,25 @@ public class GameManager : NetworkBehaviour
         localPlayerType = NetworkManager.Singleton.LocalClientId == 0 ? PlayerType.Cross : PlayerType.Circle;
         if (IsServer)
         {
-            currentPlayablePlayerType = PlayerType.Cross;
+            NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
         }
     }
 
+    private void NetworkManager_OnClientConnectedCallback(ulong clientId)
+    {
+        if (NetworkManager.Singleton.ConnectedClientsList.Count == 2)
+        {
+            currentPlayablePlayerType = PlayerType.Cross;
+            TriggerOnGameStartedRpc();
+        }
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerOnGameStartedRpc()
+    {
+        OnGameStarted?.Invoke(this, EventArgs.Empty);
+    }
+    
     [Rpc(SendTo.Server)]
     public void ClickedOnGridPositionRpc(int x, int y, PlayerType playerType)
     {
@@ -69,10 +87,22 @@ public class GameManager : NetworkBehaviour
                 currentPlayablePlayerType = PlayerType.Cross;
                 break;
         }
+        TriggerOnCurrentPlayablePlayerChangedRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerOnCurrentPlayablePlayerChangedRpc()
+    {
+        OnCurrentPlayablePlayerChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public PlayerType GetLocalPlayerType()
     {
         return localPlayerType;
+    }
+
+    public PlayerType GetCurrentPlayablePlayerType()
+    {
+        return currentPlayablePlayerType;
     }
 }
