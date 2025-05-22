@@ -1996,7 +1996,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1437413442
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2531,6 +2531,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   crossPrefab: {fileID: 538751769073451950, guid: 68b3bef6506266d44ba177a1c639d123, type: 3}
   circlePrefab: {fileID: 538751769073451950, guid: 6f05fd55bf59fe942a705fba23cdfa9e, type: 3}
+  lineCompletePrefab: {fileID: 7570564159926480320, guid: 71a06c1878a938c499ef602c3a90f905, type: 3}
 --- !u!4 &1656439309
 Transform:
   m_ObjectHideFlags: 0
