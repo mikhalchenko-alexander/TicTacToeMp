@@ -27,6 +27,7 @@ public class GameManager : NetworkBehaviour
     
     private PlayerType localPlayerType;
     private NetworkVariable<PlayerType> currentPlayablePlayerType = new();
+    private PlayerType[,] playerTypeArray = new PlayerType[3, 3];
 
     private void Awake()
     {
@@ -74,6 +75,10 @@ public class GameManager : NetworkBehaviour
     {
         if (playerType != currentPlayablePlayerType.Value) return;
 
+        if (playerTypeArray[x, y] != PlayerType.None) return;
+        
+        playerTypeArray[x, y] = playerType;
+        
         Debug.LogFormat("Clicked on grid position {0}, {1}", x, y);
         OnClickedOnGridPosition?.Invoke(this, new OnClickedOnGridPositionEventArgs
         {
