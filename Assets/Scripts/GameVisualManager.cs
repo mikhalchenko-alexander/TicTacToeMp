@@ -54,9 +54,7 @@ public class GameVisualManager : NetworkBehaviour
                 prefab = circlePrefab;
                 break;
         }
-
         var spawnedCrossTransform = Instantiate(prefab, GetGridWorldPosition(x, y), Quaternion.identity);
-        ;
         spawnedCrossTransform.GetComponent<NetworkObject>().Spawn(true);
     }
 
