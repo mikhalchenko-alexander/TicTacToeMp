@@ -3750,6 +3750,7 @@ MonoBehaviour:
   resultTextMesh: {fileID: 482799777}
   winColor: {r: 0.057849795, g: 0.9433962, b: 0.19786367, a: 1}
   loseColor: {r: 0.9529412, g: 0.36357164, b: 0.050980363, a: 1}
+  tieColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
   rematchButton: {fileID: 919417346}
 --- !u!1 &2136927763
 GameObject:
