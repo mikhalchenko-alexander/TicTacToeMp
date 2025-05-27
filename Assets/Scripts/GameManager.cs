@@ -11,9 +11,9 @@ public class GameManager : NetworkBehaviour
 
     public class OnClickedOnGridPositionEventArgs : EventArgs
     {
-        public int x;
-        public int y;
-        public PlayerType playerType;
+        public int X;
+        public int Y;
+        public PlayerType PlayerType;
     }
 
     public enum PlayerType
@@ -33,9 +33,9 @@ public class GameManager : NetworkBehaviour
 
     public struct Line
     {
-        public List<Vector2Int> gridVector2IntList;
-        public Vector2Int centerGridPosition;
-        public Orientation orientation;
+        public List<Vector2Int> GridVector2IntList;
+        public Vector2Int CenterGridPosition;
+        public Orientation Orientation;
     }
 
     private List<Line> lineList;
@@ -45,11 +45,12 @@ public class GameManager : NetworkBehaviour
 
     public class OnGameWinEventArgs : EventArgs
     {
-        public Line line;
-        public PlayerType winPlayerType;
+        public Line Line;
+        public PlayerType WinPlayerType;
     }
 
     public event EventHandler OnCurrentPlayablePlayerChanged;
+    public event EventHandler OnRematch;
 
     private PlayerType localPlayerType;
     private NetworkVariable<PlayerType> currentPlayablePlayerType = new();
@@ -73,63 +74,63 @@ public class GameManager : NetworkBehaviour
             // Horizontal lines
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(0, 0), new(1, 0), new(2, 0) },
-                centerGridPosition = new Vector2Int(1, 0),
-                orientation = Orientation.Horizontal
+                CenterGridPosition = new Vector2Int(1, 0),
+                Orientation = Orientation.Horizontal
             },
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(0, 1), new(1, 1), new(2, 1) },
-                centerGridPosition = new Vector2Int(1, 1),
-                orientation = Orientation.Horizontal
+                CenterGridPosition = new Vector2Int(1, 1),
+                Orientation = Orientation.Horizontal
             },
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(0, 2), new(1, 2), new(2, 2) },
-                centerGridPosition = new Vector2Int(1, 2),
-                orientation = Orientation.Horizontal
+                CenterGridPosition = new Vector2Int(1, 2),
+                Orientation = Orientation.Horizontal
             },
 
             // Vertical lines
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(0, 0), new(0, 1), new(0, 2) },
-                centerGridPosition = new Vector2Int(0, 1),
-                orientation = Orientation.Vertical
+                CenterGridPosition = new Vector2Int(0, 1),
+                Orientation = Orientation.Vertical
             },
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(1, 0), new(1, 1), new(1, 2) },
-                centerGridPosition = new Vector2Int(1, 1),
-                orientation = Orientation.Vertical
+                CenterGridPosition = new Vector2Int(1, 1),
+                Orientation = Orientation.Vertical
             },
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(2, 0), new(2, 1), new(2, 2) },
-                centerGridPosition = new Vector2Int(2, 1),
-                orientation = Orientation.Vertical
+                CenterGridPosition = new Vector2Int(2, 1),
+                Orientation = Orientation.Vertical
             },
 
             // Diagonal lines
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(0, 0), new(1, 1), new(2, 2) },
-                centerGridPosition = new Vector2Int(1, 1),
-                orientation = Orientation.DiagonalA
+                CenterGridPosition = new Vector2Int(1, 1),
+                Orientation = Orientation.DiagonalA
             },
             new()
             {
-                gridVector2IntList = new List<Vector2Int>
+                GridVector2IntList = new List<Vector2Int>
                     { new(0, 2), new(1, 1), new(2, 0) },
-                centerGridPosition = new Vector2Int(1, 1),
-                orientation = Orientation.DiagonalB
+                CenterGridPosition = new Vector2Int(1, 1),
+                Orientation = Orientation.DiagonalB
             }
         };
     }
@@ -142,7 +143,7 @@ public class GameManager : NetworkBehaviour
             NetworkManager.Singleton.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
         }
 
-        currentPlayablePlayerType.OnValueChanged += (oldPlayerType, newPlayerType) =>
+        currentPlayablePlayerType.OnValueChanged += (_, _) =>
         {
             OnCurrentPlayablePlayerChanged?.Invoke(this, EventArgs.Empty);
         };
@@ -175,9 +176,9 @@ public class GameManager : NetworkBehaviour
         Debug.LogFormat("Clicked on grid position {0}, {1}", x, y);
         OnClickedOnGridPosition?.Invoke(this, new OnClickedOnGridPositionEventArgs
         {
-            x = x,
-            y = y,
-            playerType = playerType
+            X = x,
+            Y = y,
+            PlayerType = playerType
         });
 
         switch (currentPlayablePlayerType.Value)
@@ -204,9 +205,9 @@ public class GameManager : NetworkBehaviour
     private bool TestWinnerLine(Line line)
     {
         return TestWinnerLine(
-            playerTypeArray[line.gridVector2IntList[0].x, line.gridVector2IntList[0].y],
-            playerTypeArray[line.gridVector2IntList[1].x, line.gridVector2IntList[1].y],
-            playerTypeArray[line.gridVector2IntList[2].x, line.gridVector2IntList[2].y]);
+            playerTypeArray[line.GridVector2IntList[0].x, line.GridVector2IntList[0].y],
+            playerTypeArray[line.GridVector2IntList[1].x, line.GridVector2IntList[1].y],
+            playerTypeArray[line.GridVector2IntList[2].x, line.GridVector2IntList[2].y]);
     }
 
     private void TestWinner()
@@ -216,9 +217,9 @@ public class GameManager : NetworkBehaviour
             var line = lineList[i];
             if (TestWinnerLine(line))
             {
-                Debug.Log("Winner: " + line.centerGridPosition);
+                Debug.Log("Winner: " + line.CenterGridPosition);
                 currentPlayablePlayerType.Value = PlayerType.None;
-                TriggerOnGameWinRpc(i, playerTypeArray[line.centerGridPosition.x, line.centerGridPosition.y]);
+                TriggerOnGameWinRpc(i, playerTypeArray[line.CenterGridPosition.x, line.CenterGridPosition.y]);
                 break;
             }
         }
@@ -230,8 +231,8 @@ public class GameManager : NetworkBehaviour
         Line line = lineList[lineIndex];
         OnGameWin?.Invoke(this, new OnGameWinEventArgs
         {
-            line = line,
-            winPlayerType = winPlayerType
+            Line = line,
+            WinPlayerType = winPlayerType
         });
     }
 
@@ -243,5 +244,25 @@ public class GameManager : NetworkBehaviour
     public PlayerType GetCurrentPlayablePlayerType()
     {
         return currentPlayablePlayerType.Value;
+    }
+
+    [Rpc(SendTo.Server)]
+    public void RematchRpc()
+    {
+        for (int x = 0; x < playerTypeArray.GetLength(0); x++)
+        {
+            for (int y = 0; y < playerTypeArray.GetLength(1); y++)
+            {
+                playerTypeArray[x, y] = PlayerType.None;
+            }
+        }
+        currentPlayablePlayerType.Value = PlayerType.Cross;
+        TriggerOnRematchRpc();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerOnRematchRpc()
+    {
+        OnRematch?.Invoke(this, EventArgs.Empty);
     }
 }
