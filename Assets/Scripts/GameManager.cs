@@ -53,6 +53,7 @@ public class GameManager : NetworkBehaviour
     public event EventHandler OnCurrentPlayablePlayerChanged;
     public event EventHandler OnRematch;
     public event EventHandler OnScoreChanged;
+    public event EventHandler OnObjectPlaced;
 
     private PlayerType localPlayerType;
     private PlayerType[,] playerTypeArray = new PlayerType[3, 3];
@@ -195,6 +196,7 @@ public class GameManager : NetworkBehaviour
             Y = y,
             PlayerType = playerType
         });
+        TriggerOnObjectPlacedRpc();
 
         switch (currentPlayablePlayerType.Value)
         {
@@ -208,6 +210,12 @@ public class GameManager : NetworkBehaviour
         }
 
         TestWinner();
+    }
+
+    [Rpc(SendTo.ClientsAndHost)]
+    private void TriggerOnObjectPlacedRpc()
+    {
+        OnObjectPlaced?.Invoke(this, EventArgs.Empty);
     }
 
     private bool TestWinnerLine(PlayerType aPlayerType, PlayerType bPlayerType, PlayerType cPlayerType)
