@@ -18,7 +18,7 @@ public class TicTacToeLobby : MonoBehaviour
 
     async void Start()
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             await UnityServices.InitializeAsync();
 
@@ -30,22 +30,18 @@ public class TicTacToeLobby : MonoBehaviour
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
             await CreateLobby();
             await ListLobbies();
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Initialize Unity Services failed" );
     }
 
-    private void Update()
+    private async void Update()
     {
-        HandleLobbyHeartbeat();
-        HandleLobbyPollForUpdate();
+        await HandleLobbyHeartbeat();
+        await HandleLobbyPollForUpdate();
     }
 
     private async Task HandleLobbyHeartbeat()
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             if (hostLobby == null) return;
 
@@ -55,31 +51,23 @@ public class TicTacToeLobby : MonoBehaviour
                 heartbeatTimer = HeartbeatTimerMax;
                 await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
             }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Heartbeat ping failed" );
     }
 
     private async Task CreateLobby()
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             hostLobby = await LobbyService.Instance.CreateLobbyAsync("Lobby", 2);
             joinedLobby = hostLobby;
             PrintPlayers(hostLobby);
             Debug.Log($"Lobby created: {hostLobby.Name} with id: {hostLobby.Id} max players {hostLobby.MaxPlayers}");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Lobby creation failed");
     }
 
     private async Task ListLobbies()
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             var options = new QueryLobbiesOptions
             {
@@ -98,47 +86,31 @@ public class TicTacToeLobby : MonoBehaviour
             {
                 Debug.Log($"Lobby found: {lobby.Name} with id: {lobby.Id} max players {lobby.MaxPlayers}");
             }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Lobby listing failed");
     }
 
     private async Task JoinLobbyById(String lobbyId)
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Join lobby by ID failed");
     }
 
     private async Task JoinLobbyByCode(String lobbyCode)
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Join lobby by code failed");
     }
 
     private async Task QuickJoinLobby()
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             joinedLobby = await LobbyService.Instance.QuickJoinLobbyAsync();
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Quick lobby join failed");
     }
 
     private void PrintPlayers(Lobby lobby)
@@ -153,7 +125,7 @@ public class TicTacToeLobby : MonoBehaviour
 
     private async Task HandleLobbyPollForUpdate()
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             if (joinedLobby == null) return;
 
@@ -163,22 +135,14 @@ public class TicTacToeLobby : MonoBehaviour
                 lobbyUpdateTimer = LobbyUpdateTimerMax;
                 joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
             }
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Lobby poll for update failed");
     }
 
     private async Task LeaveLobby()
     {
-        try
+        await ErrorHandler.SafeExecuteAsync(async () =>
         {
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
-        }
-        catch (Exception e)
-        {
-            Debug.LogError(e);
-        }
+        }, "Leave lobby failed");
     }
 }
