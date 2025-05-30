@@ -123,4 +123,16 @@ public class TicTacToeLobby : MonoBehaviour
             Debug.LogError(e);
         }
     }
+    
+    private async Task QuickJoinLobby()
+    {
+        try
+        {
+            await LobbyService.Instance.QuickJoinLobbyAsync();
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+    }
 }
