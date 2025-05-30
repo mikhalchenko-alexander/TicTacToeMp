@@ -3,10 +3,15 @@ using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
 
-public class Lobby : MonoBehaviour
+public class TicTacToeLobby : MonoBehaviour
 {
+    private Lobby hostLobby;
+    private float heartbeatTimer;
+    private const float HeartbeatTimerMax = 15f;
+
     async void Start()
     {
         try
@@ -17,7 +22,7 @@ public class Lobby : MonoBehaviour
             {
                 Debug.Log("Signed in" + AuthenticationService.Instance.PlayerId);
             };
-            
+
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
             await CreateLobby();
             await ListLobbies();
@@ -28,12 +33,30 @@ public class Lobby : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        HandleLobbyHeartbeat();
+    }
+
+    private async Task HandleLobbyHeartbeat()
+    {
+        if (hostLobby == null) return;
+
+        heartbeatTimer -= Time.deltaTime;
+        if (heartbeatTimer <= 0)
+        {
+            heartbeatTimer = HeartbeatTimerMax;
+            await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+        }
+    }
+
     private async Task CreateLobby()
     {
         try
         {
-            var lobby = await LobbyService.Instance.CreateLobbyAsync("Lobby", 2);
-            Debug.Log("Lobby created: " + lobby.Name + " with id: " + lobby.Id + " max players " + lobby.MaxPlayers);
+            hostLobby = await LobbyService.Instance.CreateLobbyAsync("Lobby", 2);
+            Debug.Log("Lobby created: " + hostLobby.Name + " with id: " + hostLobby.Id + " max players " +
+                      hostLobby.MaxPlayers);
         }
         catch (Exception e)
         {
@@ -55,6 +78,5 @@ public class Lobby : MonoBehaviour
         {
             Debug.LogError(e);
         }
-        
     }
 }
