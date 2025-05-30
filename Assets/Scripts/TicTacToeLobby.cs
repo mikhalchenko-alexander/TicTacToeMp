@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -68,7 +69,19 @@ public class TicTacToeLobby : MonoBehaviour
     {
         try
         {
-            var lobbies = await LobbyService.Instance.QueryLobbiesAsync();
+            var options = new QueryLobbiesOptions
+            {
+                Count = 25,
+                Filters = new List<QueryFilter>
+                {
+                    new(QueryFilter.FieldOptions.AvailableSlots, value: "0", QueryFilter.OpOptions.GT)
+                },
+                Order = new List<QueryOrder>
+                {
+                    new(asc: false, QueryOrder.FieldOptions.Created)
+                }
+            };
+            var lobbies = await LobbyService.Instance.QueryLobbiesAsync(options);
             foreach (var lobby in lobbies.Results)
             {
                 Debug.Log("Lobby found: " + lobby.Name + " with id: " + lobby.Id + " max players " + lobby.MaxPlayers);
