@@ -145,4 +145,12 @@ public class TicTacToeLobby : MonoBehaviour
             await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
         }, "Leave lobby failed");
     }
+    
+    private async Task KickFromLobby(String playerId)
+    {
+        await ErrorHandler.SafeExecuteAsync(async () =>
+        {
+            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, playerId);
+        }, "Leave kick failed");
+    }
 }
