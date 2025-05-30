@@ -41,13 +41,20 @@ public class TicTacToeLobby : MonoBehaviour
 
     private async Task HandleLobbyHeartbeat()
     {
-        if (hostLobby == null) return;
-
-        heartbeatTimer -= Time.deltaTime;
-        if (heartbeatTimer <= 0)
+        try
         {
-            heartbeatTimer = HeartbeatTimerMax;
-            await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+            if (hostLobby == null) return;
+
+            heartbeatTimer -= Time.deltaTime;
+            if (heartbeatTimer <= 0)
+            {
+                heartbeatTimer = HeartbeatTimerMax;
+                await LobbyService.Instance.SendHeartbeatPingAsync(hostLobby.Id);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
         }
     }
 
@@ -95,11 +102,25 @@ public class TicTacToeLobby : MonoBehaviour
 
     private async Task JoinLobbyById(String lobbyId)
     {
-        await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId);
+        try
+        {
+            await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
     }
     
     private async Task JoinLobbyByCode(String lobbyCode)
     {
-        await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
+        try
+        {
+            await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
     }
 }
