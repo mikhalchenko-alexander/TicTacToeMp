@@ -92,4 +92,14 @@ public class TicTacToeLobby : MonoBehaviour
             Debug.LogError(e);
         }
     }
+
+    private async Task JoinLobbyById(String lobbyId)
+    {
+        await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId);
+    }
+    
+    private async Task JoinLobbyByCode(String lobbyCode)
+    {
+        await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
+    }
 }
