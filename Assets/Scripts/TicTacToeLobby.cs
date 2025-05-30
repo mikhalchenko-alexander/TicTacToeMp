@@ -21,7 +21,7 @@ public class TicTacToeLobby : MonoBehaviour
 
             AuthenticationService.Instance.SignedIn += () =>
             {
-                Debug.Log("Signed in" + AuthenticationService.Instance.PlayerId);
+                Debug.Log($"Signed in{AuthenticationService.Instance.PlayerId}");
             };
 
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
@@ -63,8 +63,8 @@ public class TicTacToeLobby : MonoBehaviour
         try
         {
             hostLobby = await LobbyService.Instance.CreateLobbyAsync("Lobby", 2);
-            Debug.Log("Lobby created: " + hostLobby.Name + " with id: " + hostLobby.Id + " max players " +
-                      hostLobby.MaxPlayers);
+            PrintPlayers(hostLobby);
+            Debug.Log($"Lobby created: {hostLobby.Name} with id: {hostLobby.Id} max players {hostLobby.MaxPlayers}");
         }
         catch (Exception e)
         {
@@ -91,7 +91,7 @@ public class TicTacToeLobby : MonoBehaviour
             var lobbies = await LobbyService.Instance.QueryLobbiesAsync(options);
             foreach (var lobby in lobbies.Results)
             {
-                Debug.Log("Lobby found: " + lobby.Name + " with id: " + lobby.Id + " max players " + lobby.MaxPlayers);
+                Debug.Log($"Lobby found: {lobby.Name} with id: {lobby.Id} max players {lobby.MaxPlayers}");
             }
         }
         catch (Exception e)
@@ -133,6 +133,16 @@ public class TicTacToeLobby : MonoBehaviour
         catch (Exception e)
         {
             Debug.LogError(e);
+        }
+    }
+
+    private void PrintPlayers(Lobby lobby)
+    {
+        Debug.Log($"Players in lobby {lobby.Name}:");
+
+        foreach (var player in lobby.Players)
+        {
+            Debug.Log(player.Id);
         }
     }
 }
