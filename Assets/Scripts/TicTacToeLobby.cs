@@ -16,7 +16,7 @@ public class TicTacToeLobby : MonoBehaviour
     private const float LobbyUpdateTimerMax = 2;
     private const float HeartbeatTimerMax = 15f;
 
-    async void Start()
+    private async void Start()
     {
         await ErrorHandler.SafeExecuteAsync(async () =>
         {
