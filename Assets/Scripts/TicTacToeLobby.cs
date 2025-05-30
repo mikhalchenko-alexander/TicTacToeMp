@@ -169,4 +169,16 @@ public class TicTacToeLobby : MonoBehaviour
             Debug.LogError(e);
         }
     }
+
+    private async Task LeaveLobby()
+    {
+        try
+        {
+            await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, AuthenticationService.Instance.PlayerId);
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+        }
+    }
 }
