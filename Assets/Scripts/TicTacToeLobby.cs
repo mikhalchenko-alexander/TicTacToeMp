@@ -10,7 +10,10 @@ using UnityEngine;
 public class TicTacToeLobby : MonoBehaviour
 {
     private Lobby hostLobby;
+    private Lobby joinedLobby;
     private float heartbeatTimer;
+    private float lobbyUpdateTimer;
+    private const float LobbyUpdateTimerMax = 2;
     private const float HeartbeatTimerMax = 15f;
 
     async void Start()
@@ -37,6 +40,7 @@ public class TicTacToeLobby : MonoBehaviour
     private void Update()
     {
         HandleLobbyHeartbeat();
+        HandleLobbyPollForUpdate();
     }
 
     private async Task HandleLobbyHeartbeat()
@@ -63,6 +67,7 @@ public class TicTacToeLobby : MonoBehaviour
         try
         {
             hostLobby = await LobbyService.Instance.CreateLobbyAsync("Lobby", 2);
+            joinedLobby = hostLobby;
             PrintPlayers(hostLobby);
             Debug.Log($"Lobby created: {hostLobby.Name} with id: {hostLobby.Id} max players {hostLobby.MaxPlayers}");
         }
@@ -104,7 +109,7 @@ public class TicTacToeLobby : MonoBehaviour
     {
         try
         {
-            await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId);
+            joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobbyId);
         }
         catch (Exception e)
         {
@@ -116,7 +121,7 @@ public class TicTacToeLobby : MonoBehaviour
     {
         try
         {
-            await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
+            joinedLobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
         }
         catch (Exception e)
         {
@@ -128,7 +133,7 @@ public class TicTacToeLobby : MonoBehaviour
     {
         try
         {
-            await LobbyService.Instance.QuickJoinLobbyAsync();
+            joinedLobby = await LobbyService.Instance.QuickJoinLobbyAsync();
         }
         catch (Exception e)
         {
@@ -143,6 +148,25 @@ public class TicTacToeLobby : MonoBehaviour
         foreach (var player in lobby.Players)
         {
             Debug.Log(player.Id);
+        }
+    }
+
+    private async Task HandleLobbyPollForUpdate()
+    {
+        try
+        {
+            if (joinedLobby == null) return;
+
+            lobbyUpdateTimer -= Time.deltaTime;
+            if (lobbyUpdateTimer <= 0)
+            {
+                lobbyUpdateTimer = LobbyUpdateTimerMax;
+                joinedLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
         }
     }
 }
