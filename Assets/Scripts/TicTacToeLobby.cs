@@ -116,7 +116,7 @@ public class TicTacToeLobby : MonoBehaviour
             Debug.LogError(e);
         }
     }
-    
+
     private async Task JoinLobbyByCode(String lobbyCode)
     {
         try
@@ -128,7 +128,7 @@ public class TicTacToeLobby : MonoBehaviour
             Debug.LogError(e);
         }
     }
-    
+
     private async Task QuickJoinLobby()
     {
         try
