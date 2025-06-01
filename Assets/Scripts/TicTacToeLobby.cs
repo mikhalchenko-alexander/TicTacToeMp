@@ -1,17 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TMPro;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 public class TicTacToeLobby : MonoBehaviour
 {
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private Button refreshLobbyButton;
+    [SerializeField] private VerticalLayoutGroup lobbyList;
     
     private Lobby hostLobby;
     private Lobby joinedLobby;
@@ -87,9 +92,19 @@ public class TicTacToeLobby : MonoBehaviour
                 }
             };
             var lobbies = await LobbyService.Instance.QueryLobbiesAsync(options);
+            foreach (var textMeshProUGUI in lobbyList.gameObject.GetComponentsInChildren<TextMeshProUGUI>())
+            {
+                Destroy(textMeshProUGUI.gameObject);
+            }
             foreach (var lobby in lobbies.Results)
             {
                 Debug.Log($"Lobby found: {lobby.Name} with id: {lobby.Id} max players {lobby.MaxPlayers}");
+                var go = new GameObject();
+                var rtr = go.AddComponent<RectTransform>();
+                rtr.pivot = new Vector2(0, 1);
+                var tmp = go.AddComponent<TextMeshProUGUI>();
+                tmp.text = lobby.Name;
+                go.transform.SetParent(lobbyList.transform);;
             }
         }, "Lobby listing failed");
     }
