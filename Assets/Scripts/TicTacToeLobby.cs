@@ -6,9 +6,13 @@ using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TicTacToeLobby : MonoBehaviour
 {
+    [SerializeField] private Button createLobbyButton;
+    [SerializeField] private Button refreshLobbyButton;
+    
     private Lobby hostLobby;
     private Lobby joinedLobby;
     private float heartbeatTimer;
@@ -28,9 +32,10 @@ public class TicTacToeLobby : MonoBehaviour
             };
 
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
-            await CreateLobby();
-            await ListLobbies();
         }, "Initialize Unity Services failed" );
+
+        createLobbyButton.onClick.AddListener(async () => await CreateLobby());
+        refreshLobbyButton.onClick.AddListener(async () => await ListLobbies());
     }
 
     private async void Update()
