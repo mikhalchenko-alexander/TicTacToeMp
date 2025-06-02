@@ -16,6 +16,7 @@ public class TicTacToeLobby : MonoBehaviour
 {
     [SerializeField] private Button createLobbyButton;
     [SerializeField] private Button refreshLobbyButton;
+    [SerializeField] private Button leaveLobbyButton;
     [SerializeField] private VerticalLayoutGroup lobbyList;
     
     private Lobby hostLobby;
@@ -39,8 +40,10 @@ public class TicTacToeLobby : MonoBehaviour
             await AuthenticationService.Instance.SignInAnonymouslyAsync();
         }, "Initialize Unity Services failed" );
 
+        leaveLobbyButton.gameObject.SetActive(false);
         createLobbyButton.onClick.AddListener(async () => await CreateLobby());
         refreshLobbyButton.onClick.AddListener(async () => await ListLobbies());
+        leaveLobbyButton.onClick.AddListener(async () => await LeaveLobby());
     }
 
     private async void Update()
